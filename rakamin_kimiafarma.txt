@@ -1,0 +1,100 @@
+# BAGIAN A. SINTAKS BIGQUERY
+
+```sql
+-- ============================================================
+-- BAGIAN 1. MEMERIKSA STRUKTUR KOLOM TABEL SUMBER
+-- ============================================================
+
+SELECT
+  column_name,
+  data_type
+FROM
+  `project-rakamin-510413.projectrakamin.INFORMATION_SCHEMA.COLUMNS`
+WHERE
+  table_name = 'tabel_analisa'
+ORDER BY
+  ordinal_position;
+
+
+-- ============================================================
+-- BAGIAN 2. MENAMPILKAN CONTOH DATA SUMBER
+-- ============================================================
+
+SELECT *
+FROM
+  `project-rakamin-510413.projectrakamin.tabel_analisa`
+LIMIT 5;
+
+
+-- ============================================================
+-- BAGIAN 3. MEMERIKSA DAFTAR PROVINSI
+-- ============================================================
+
+SELECT DISTINCT
+  provinsi
+FROM
+  `project-rakamin-510413.projectrakamin.tabel_analisa`
+ORDER BY
+  provinsi;
+
+
+-- ============================================================
+-- BAGIAN 4. MENAMPILKAN DATA PERIODE 2020–2023
+-- DAN MENAMBAHKAN VARIABEL WAKTU
+-- ============================================================
+
+SELECT
+  *,
+  EXTRACT(YEAR FROM date) AS tahun,
+  EXTRACT(MONTH FROM date) AS bulan,
+  FORMAT_DATE('%B', date) AS nama_bulan
+FROM
+  `project-rakamin-510413.projectrakamin.tabel_analisa`
+WHERE
+  EXTRACT(YEAR FROM date) BETWEEN 2020 AND 2023
+ORDER BY
+  date;
+
+
+-- ============================================================
+-- BAGIAN 5. MEMBUAT VIEW DASHBOARD KIMIA FARMA
+-- ============================================================
+
+CREATE OR REPLACE VIEW
+  `project-rakamin-510413.projectrakamin.dashboard_kimia_farma`
+AS
+SELECT
+  *,
+  EXTRACT(YEAR FROM date) AS tahun,
+  EXTRACT(MONTH FROM date) AS bulan,
+  FORMAT_DATE('%B', date) AS nama_bulan
+FROM
+  `project-rakamin-510413.projectrakamin.tabel_analisa`
+WHERE
+  EXTRACT(YEAR FROM date) BETWEEN 2020 AND 2023;
+
+
+-- ============================================================
+-- BAGIAN 6. MEMERIKSA HASIL VIEW
+-- ============================================================
+
+SELECT *
+FROM
+  `project-rakamin-510413.projectrakamin.dashboard_kimia_farma`
+LIMIT 100;
+
+
+-- ============================================================
+-- BAGIAN 7. MEMERIKSA JUMLAH BARIS BERDASARKAN TAHUN
+-- ============================================================
+
+SELECT
+  tahun,
+  COUNT(*) AS jumlah_baris
+FROM
+  `project-rakamin-510413.projectrakamin.dashboard_kimia_farma`
+GROUP BY
+  tahun
+ORDER BY
+  tahun;
+```
